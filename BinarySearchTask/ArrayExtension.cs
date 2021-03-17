@@ -1,13 +1,40 @@
 ﻿using System;
 using System.Collections;
+using System.Collections.Generic;
 
 namespace BinarySearchTask
 {
     /// <summary>
     /// Class for basic array operations.
     /// </summary>
-    public static class ArrayExtension
+    public static class ArrayExtension 
     {
+        public static int? BinarySearch<T>(T[] source, T value, IComparer<T> comparer = null)
+        {
+            if (source is null || value is null)
+            {
+                throw new ArgumentNullException(nameof(source), "source or value is null");
+            }
+
+            if (source.Length == 0)
+            {
+                return null;
+            }
+
+            if (!(comparer is null))
+            {
+                return Search<T>(source, value, comparer, 0, source.Length);
+            }
+            else if (!(Comparer<T>.Default is null))
+            {
+                return Search<T>(source, value, Comparer<T>.Default, 0, source.Length);
+            }
+            else
+            {
+                throw new ArgumentException($"Comparer<T>.Default is null");
+            }
+        }
+
         /// <summary>
         /// Implements binary search, see https://en.wikipedia.org/wiki/Binary_search_algorithm.
         /// </summary>
@@ -26,36 +53,27 @@ namespace BinarySearchTask
         /// source = {1, 3, 4, 6, 8, 9, 11}, value = 14 => null.
         /// source = { }, value = 14 => null.
         /// </example>
-        public static int? BinarySearch<T>(T[] source, T value) 
-            where T : IComparable<T>
+        public static int? Search<T>(T[] source, T value, IComparer<T> comparer, int left, int right)
         {
-            if (source is null)
+            if (left >= right)
             {
-                throw new ArgumentNullException($"array is null");
+                return null;
             }
 
-            int left = 0, right = source.Length - 1, mid = 0;
-            int? index = null;
-            while (left <= right) 
+            int mid = (left + right) / 2;
+            int resultCompare = comparer.Compare(value, source[mid]);
+            if (resultCompare == 0)
             {
-                mid = (left + right) / 2; 
-                if (value.CompareTo(source[mid]) == 0)
-                {
-                    index = mid;
-                    break;          
-                }
-
-                if (value.CompareTo(source[mid]) == -1)
-                {
-                    right = mid - 1;  
-                }
-                else
-                {
-                    left = mid + 1;   
-                }
+                return (int?)mid;
             }
-
-            return index;
+            else if (resultCompare == 1)
+            {
+                return Search(source, value, comparer, mid + 1, right);
+            }
+            else
+            {
+                return Search(source, value, comparer, left, mid);
+            }
         }
     }
 }
