@@ -55,5 +55,21 @@ namespace BinarySearchTask.Tests
         {
             return BinarySearch(source, value);
         }
+
+        [TestCase(new[] { "abcd" }, "abcd", ExpectedResult = 0)]
+        [TestCase(new[] { "aaaa", "cccc", "ccca", "dcca", "dbca" }, "aaaa", ExpectedResult = 0)]
+        [TestCase(new[] { "abcdefghi", "abcdddddd", "abcdeffff", "abcdefggg", "abcdefghh" }, "abcdefggg", ExpectedResult = 3)]
+        public int BinarySearch_String_ReturnIndexOfValueInArray(string[] source, string value)
+        {
+            return BinarySearch(source, value).Value;
+        }
+
+        [TestCase(new string[] { }, "abcd", ExpectedResult = null)]
+        [TestCase(new[] { "aaaa", "cccc", "ccca", "dcca", "dbca" }, "aaaaaa", ExpectedResult = null)]
+        [TestCase(new[] { "abcdefghi", "abcdddddd", "abcdeffff", "abcdefggg", "abcdefghh" }, "abcdasfefggg", ExpectedResult = null)]
+        public int? BinarySearch_String_ReturnNull(string[] source, string value)
+        {
+            return BinarySearch(source, value);
+        }
     }
 }
